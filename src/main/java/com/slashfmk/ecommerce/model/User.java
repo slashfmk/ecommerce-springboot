@@ -2,7 +2,7 @@ package com.slashfmk.ecommerce.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.slashfmk.ecommerce.utils.UserRoles;
+import com.slashfmk.ecommerce.roles.UserRoles;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -41,6 +41,7 @@ public class User {
 
     @Column(nullable = false)
     private String username;
+
     @Column(nullable = false)
     private String email;
 
