@@ -8,6 +8,7 @@ import com.slashfmk.ecommerce.repository.AddressRepository;
 import com.slashfmk.ecommerce.repository.DepartmentRepository;
 import com.slashfmk.ecommerce.repository.ProductRepository;
 import com.slashfmk.ecommerce.repository.UserRepository;
+import com.slashfmk.ecommerce.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,6 +24,7 @@ public class EcommerceApplication {
     @Bean
     public CommandLineRunner commandLineRunner(
             UserRepository userRepository,
+            UserService userService,
             AddressRepository addressRepository,
             DepartmentRepository departmentRepository,
             ProductRepository productRepository
@@ -30,7 +32,10 @@ public class EcommerceApplication {
         return (args) -> {
 
             var user1 = new User("Yannick", "slash", "slashcs7@hotmail.com", "1234");
-            userRepository.save(user1);
+            user1.setAccountEnabled(false);
+            user1.setAccountNonLocked(false);
+
+            userService.registerUser(user1);
 
             var address = new Address("314 66th Ave #18", "IA", "52404", "US", user1);
             var address2 = new Address("Zaplin st 33", "CA", "7777", "US", user1);

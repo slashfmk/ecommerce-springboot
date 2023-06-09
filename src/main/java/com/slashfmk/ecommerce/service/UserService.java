@@ -3,8 +3,12 @@ package com.slashfmk.ecommerce.service;
 
 import com.slashfmk.ecommerce.model.User;
 import com.slashfmk.ecommerce.repository.UserRepository;
+import com.slashfmk.ecommerce.security.SecurityConfig;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +18,7 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final SecurityConfig securityConfig;
 
     public User registerUser(User user) {
 
@@ -22,6 +27,7 @@ public class UserService {
         if (userExists.isPresent())
             throw new IllegalArgumentException("A user with the current email or username exits");
 
+        user.setPassword(this.encodedPassword(user.getPassword()));
         this.userRepository.save(user);
 
         return user;
@@ -30,25 +36,24 @@ public class UserService {
 
     public User updateUser(User userNewInfo) {
 
-        var userExists = this.userRepository.findFirstByEmailAndUsername(userNewInfo.getEmail(), userNewInfo.getUsername());
+        var userExists = this.userRepository
+                .findFirstByEmailAndUsername(userNewInfo.getEmail(), userNewInfo.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException(userNewInfo.getUsername() + " not found!"));
 
-        if (userExists.isEmpty()) throw new IllegalStateException("There is no such user to update");
-
-        this.userRepository.save(userNewInfo);
-
-        return userNewInfo;
+        this.userRepository.save(userExists);
+        return userExists;
     }
 
-
     public User getUser(Long id) {
-
         return this.userExists(id);
     }
 
 
     public User deleteUser(Long id) {
 
-        return this.userExists(id);
+        var userExist = this.userExists(id);
+        this.userRepository.delete(userExist);
+        return userExist;
     }
 
 
@@ -56,13 +61,17 @@ public class UserService {
         return this.userRepository.findAll();
     }
 
+    // Encode password using Bcrypt
+    private String encodedPassword(String password) {
+        return this.securityConfig.passwordEncoder().encode(password);
+    }
+
+    /**
+     * Util
+     * Check if user exists by id
+     */
     private User userExists(Long id) {
-
-        var userExist = this.userRepository.findById(id);
-
-        if (userExist.isEmpty()) throw new IllegalStateException("user with " + id + " doesn't exist");
-
-        return userExist.get();
+        return this.userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("The user doesn't exist"));
     }
 
 }
