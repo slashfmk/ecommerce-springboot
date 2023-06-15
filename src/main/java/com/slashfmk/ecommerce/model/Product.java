@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -38,6 +41,11 @@ public class Product {
             foreignKey = @ForeignKey(name = "product_department_fk")
     )
     private Department department;
+
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+
+    private List<Cart> users = new ArrayList<>();
 
     public Product(String name, String description, Double price, Department department) {
         this.name = name;

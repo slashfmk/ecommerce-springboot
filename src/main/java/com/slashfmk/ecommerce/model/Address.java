@@ -1,8 +1,11 @@
 package com.slashfmk.ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class Address {
 
     @Id
@@ -19,7 +23,7 @@ public class Address {
             allocationSize = 1
     )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
+            strategy = GenerationType.AUTO,
             generator = "address_sequence"
     )
     private Long id;
@@ -28,23 +32,18 @@ public class Address {
     private String zip;
     private String country;
 
-    @ManyToOne
-    @JoinColumn(
-            name = "user_id",
-            nullable = false,
-            referencedColumnName = "user_id",
-            foreignKey = @ForeignKey(name = "user_address_fk")
-    )
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "UserId")
+    @JsonBackReference
     private User user;
 
     private LocalDateTime createdAt;
 
-    public Address(String address, String state, String zip, String country, User user) {
+    public Address(String address, String state, String zip, String country) {
         this.address = address;
         this.state = state;
         this.zip = zip;
         this.country = country;
-        this.user = user;
         this.createdAt = LocalDateTime.now();
     }
 }

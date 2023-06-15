@@ -1,19 +1,17 @@
 package com.slashfmk.ecommerce.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.slashfmk.ecommerce.roles.UserRoles;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @AllArgsConstructor
@@ -22,20 +20,16 @@ import java.util.List;
 public class User implements UserDetails {
 
     @Id
-    @Column(
-            nullable = false,
-            name = "user_id"
-    )
     @SequenceGenerator(
             sequenceName = "user_sequence",
             name = "user_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
+            strategy = GenerationType.AUTO,
             generator = "user_sequence"
     )
-    private Long id;
+    private Long UserId;
 
     @Column(
             nullable = false
@@ -62,15 +56,18 @@ public class User implements UserDetails {
     private boolean accountNonLocked;
     private boolean accountEnabled;
 
-//    private List<UserRoles> roles;
-
     @OneToMany(
-            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            cascade = CascadeType.ALL,
             mappedBy = "user",
             orphanRemoval = true,
             fetch = FetchType.EAGER
     )
-    private List<Address> address;
+    @JsonManagedReference
+    private List<Address> address = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Cart> products = new ArrayList<>();
 
     public User(String name, String username, String email, String password) {
         this.name = name;
@@ -80,11 +77,23 @@ public class User implements UserDetails {
         this.accountNonExpired = true;
         this.accountEnabled = true;
         this.accountNonLocked = true;
+    }
 
-//        this.roles = new ArrayList<>();
-//        this.roles.add(UserRoles.NORMAL);
+//    public void addProduct(Product product) {
+//        this.products.add(new Cart(this, product));
+//    }
 
-        this.address = new ArrayList<>();
+
+    public void addAddress(Address address) {
+        if (!this.address.contains(address)) {
+            this.address.add(address);
+            address.setUser(this);
+        }
+    }
+
+    public void removeAddress(Address address) {
+        address.setUser(null);
+        this.address.remove(address);
     }
 
     @Override

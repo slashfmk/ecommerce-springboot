@@ -5,10 +5,7 @@ import com.slashfmk.ecommerce.model.User;
 import com.slashfmk.ecommerce.repository.UserRepository;
 import com.slashfmk.ecommerce.security.SecurityConfig;
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +25,10 @@ public class UserService {
             throw new IllegalArgumentException("A user with the current email or username exits");
 
         user.setPassword(this.encodedPassword(user.getPassword()));
+        user.setAccountNonLocked(true);
+        user.setAccountEnabled(true);
+        user.setAccountNonExpired(true);
+
         this.userRepository.save(user);
 
         return user;

@@ -1,18 +1,15 @@
 package com.slashfmk.ecommerce;
 
-import com.slashfmk.ecommerce.model.Address;
-import com.slashfmk.ecommerce.model.Department;
-import com.slashfmk.ecommerce.model.Product;
-import com.slashfmk.ecommerce.model.User;
-import com.slashfmk.ecommerce.repository.AddressRepository;
-import com.slashfmk.ecommerce.repository.DepartmentRepository;
-import com.slashfmk.ecommerce.repository.ProductRepository;
-import com.slashfmk.ecommerce.repository.UserRepository;
+import com.slashfmk.ecommerce.model.*;
+import com.slashfmk.ecommerce.repository.*;
 import com.slashfmk.ecommerce.service.UserService;
+import lombok.Builder;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
+import java.util.List;
 
 @SpringBootApplication
 public class EcommerceApplication {
@@ -24,8 +21,8 @@ public class EcommerceApplication {
     @Bean
     public CommandLineRunner commandLineRunner(
             UserRepository userRepository,
-            UserService userService,
             AddressRepository addressRepository,
+            CartRepository cartRepository,
             DepartmentRepository departmentRepository,
             ProductRepository productRepository
     ) {
@@ -35,21 +32,24 @@ public class EcommerceApplication {
             user1.setAccountEnabled(false);
             user1.setAccountNonLocked(false);
 
-            userService.registerUser(user1);
+            var address = new Address("314 66th Ave #18", "IA", "52404", "US");
+            var address2 = new Address("Zaplin st 33", "CA", "7777", "US");
 
-            var address = new Address("314 66th Ave #18", "IA", "52404", "US", user1);
-            var address2 = new Address("Zaplin st 33", "CA", "7777", "US", user1);
 
-            addressRepository.save(address2);
-            addressRepository.save(address);
+            user1.addAddress(address);
+            user1.addAddress(address2);
+
 
             var phoneDpt = new Department(
+                    "Phone",
+                    "This department deals with all phones brands");
+            new Department(
                     "Phone",
                     "This department deals with all phones brands");
 
             departmentRepository.save(phoneDpt);
 
-            var iphone14 = new Product(
+            var product1 = new Product(
                     "Iphone",
                     "Best apple phone ever",
                     1045.35,
@@ -61,11 +61,17 @@ public class EcommerceApplication {
                     850.75,
                     phoneDpt);
 
-
-            productRepository.save(iphone14);
             productRepository.save(product2);
+            productRepository.save(product1);
 
-            //userRepository.save(user1);
+            userRepository.save(user1);
+
+            var cart = new Cart(user1, product2);
+
+            cartRepository.save(new Cart(user1, product1));
+            cartRepository.save(new Cart(user1, product1));
+            cartRepository.save(cart);
+
         };
     }
 

@@ -25,7 +25,7 @@ public class UserController {
 
         var createdUser = this.userService.registerUser(user);
 
-        String jwtToken = jwtUtil.issueToken(createdUser.getEmail(), "ROLE_USER");
+        String jwtToken = jwtUtil.issueToken(createdUser.getUsername(), "ROLE_USER");
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, jwtToken)
@@ -52,6 +52,7 @@ public class UserController {
         return ResponseEntity.ok(foundUser);
     }
 
+    @GetMapping
     public ResponseEntity<List<User>> getUsers() {
         var users = this.userService.getUsers();
         return ResponseEntity.ok(users);

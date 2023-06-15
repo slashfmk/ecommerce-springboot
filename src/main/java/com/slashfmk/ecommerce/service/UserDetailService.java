@@ -16,6 +16,6 @@ public class UserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return this.userRepository.findUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+        return this.userRepository.findUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User "+ username +" not found!"));
     }
 }
