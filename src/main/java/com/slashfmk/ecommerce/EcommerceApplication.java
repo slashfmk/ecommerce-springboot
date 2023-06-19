@@ -24,53 +24,69 @@ public class EcommerceApplication {
             AddressRepository addressRepository,
             CartRepository cartRepository,
             DepartmentRepository departmentRepository,
-            ProductRepository productRepository
+            ProductRepository productRepository,
+            UserService userService
     ) {
         return (args) -> {
 
-            var user1 = new User("Yannick", "slash", "slashcs7@hotmail.com", "1234");
-            user1.setAccountEnabled(false);
-            user1.setAccountNonLocked(false);
+            var user1 = User.builder()
+                    .email("slashcs7@hotmail.com")
+                    .name("Yannick Fumukani")
+                    .username("slash")
+                    .password("1234")
+                    .build();
 
-            var address = new Address("314 66th Ave #18", "IA", "52404", "US");
-            var address2 = new Address("Zaplin st 33", "CA", "7777", "US");
+            var address = Address.builder()
+                    .address("Zariah 89")
+                    .state("IA")
+                    .country("US")
+                    .zip("52404")
+                    .build();
+
+            var address2 = Address.builder()
+                    .address("Zaplin st 33")
+                    .state("CA")
+                    .country("US")
+                    .zip("58741")
+                    .build();
 
 
-            user1.addAddress(address);
-            user1.addAddress(address2);
 
 
-            var phoneDpt = new Department(
-                    "Phone",
-                    "This department deals with all phones brands");
-            new Department(
-                    "Phone",
-                    "This department deals with all phones brands");
+            user1.addAddress(addressRepository.save(new Address("548 kalil", "IA", "52404", "USA")));
+          //  user1.addAddress(new Address("548 Jorgon", "NY", "55555", "USA"));
+
+
+            var phoneDpt = Department.builder()
+                    .description("Phone")
+                    .name("This department deals with all phones brands")
+                    .build();
 
             departmentRepository.save(phoneDpt);
 
-            var product1 = new Product(
-                    "Iphone",
-                    "Best apple phone ever",
-                    1045.35,
-                    phoneDpt);
+            var product1 = Product.builder()
+                    .price(785.33)
+                    .name("Iphone")
+                    .description("Best apple phone ever")
+                    .department(phoneDpt)
+                    .build();
 
-            var product2 = new Product(
-                    "Samsung s23",
-                    "Best samsung phone ever on the market place",
-                    850.75,
-                    phoneDpt);
+            var product2 = Product.builder()
+                    .price(785.33)
+                    .name("Samsung S23")
+                    .description("Best samsung phone ever on the market place")
+                    .department(phoneDpt)
+                    .build();
 
             productRepository.save(product2);
             productRepository.save(product1);
 
             userRepository.save(user1);
 
-            var cart = new Cart(user1, product2);
+            cartRepository.save(new Cart(user1, product1));
+            cartRepository.save(new Cart(user1, product2));
 
-            cartRepository.save(new Cart(user1, product1));
-            cartRepository.save(new Cart(user1, product1));
-            cartRepository.save(cart);
+            userService.getCart(user1.getUserId());
 
         };
     }

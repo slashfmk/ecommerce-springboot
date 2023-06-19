@@ -1,6 +1,7 @@
 package com.slashfmk.ecommerce.controller;
 
 import com.slashfmk.ecommerce.jwt.JWTUtil;
+import com.slashfmk.ecommerce.model.Cart;
 import com.slashfmk.ecommerce.model.User;
 import com.slashfmk.ecommerce.service.UserService;
 import lombok.AllArgsConstructor;
@@ -56,6 +57,11 @@ public class UserController {
     public ResponseEntity<List<User>> getUsers() {
         var users = this.userService.getUsers();
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/cart/{userid}")
+    public ResponseEntity<List<Cart>> getAllCartElements(@PathVariable Long userid) {
+        return ResponseEntity.ok(this.userService.getCart(userid));
     }
 
 }

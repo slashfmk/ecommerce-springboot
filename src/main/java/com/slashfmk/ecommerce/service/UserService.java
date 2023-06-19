@@ -1,7 +1,9 @@
 package com.slashfmk.ecommerce.service;
 
 
+import com.slashfmk.ecommerce.model.Cart;
 import com.slashfmk.ecommerce.model.User;
+import com.slashfmk.ecommerce.repository.CartRepository;
 import com.slashfmk.ecommerce.repository.UserRepository;
 import com.slashfmk.ecommerce.security.SecurityConfig;
 import lombok.AllArgsConstructor;
@@ -9,6 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -16,6 +20,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final SecurityConfig securityConfig;
+    private final CartRepository cartRepository;
 
     public User registerUser(User user) {
 
@@ -65,6 +70,13 @@ public class UserService {
     // Encode password using Bcrypt
     private String encodedPassword(String password) {
         return this.securityConfig.passwordEncoder().encode(password);
+    }
+
+    public List<Cart> getCart(Long id) {
+
+       return this.cartRepository.findCartById(id)
+                .orElseThrow(() -> new NoSuchElementException("There is no elements in the cart"));
+
     }
 
     /**
