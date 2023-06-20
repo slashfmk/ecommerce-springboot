@@ -29,32 +29,15 @@ public class EcommerceApplication {
     ) {
         return (args) -> {
 
-            var user1 = User.builder()
-                    .email("slashcs7@hotmail.com")
-                    .name("Yannick Fumukani")
-                    .username("slash")
-                    .password("1234")
-                    .build();
-
-            var address = Address.builder()
-                    .address("Zariah 89")
-                    .state("IA")
-                    .country("US")
-                    .zip("52404")
-                    .build();
-
-            var address2 = Address.builder()
-                    .address("Zaplin st 33")
-                    .state("CA")
-                    .country("US")
-                    .zip("58741")
-                    .build();
+            var user1 = new User("Yannick", "slashfmk", "xlt@hotmail.com", "12345");
+            var address = new Address("234 Glassdoor", "Arizona", "54874", "Phoenix");
 
 
+            var address2 = new Address("345 Stallar, apt 12", "Iowa", "25485", "US");
 
 
-            user1.addAddress(addressRepository.save(new Address("548 kalil", "IA", "52404", "USA")));
-          //  user1.addAddress(new Address("548 Jorgon", "NY", "55555", "USA"));
+            user1.addAddress(address);
+            user1.addAddress(address2);
 
 
             var phoneDpt = Department.builder()

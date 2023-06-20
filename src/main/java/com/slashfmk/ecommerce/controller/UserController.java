@@ -1,7 +1,9 @@
 package com.slashfmk.ecommerce.controller;
 
-import com.slashfmk.ecommerce.jwt.JWTUtil;
+
 import com.slashfmk.ecommerce.model.Cart;
+import com.slashfmk.ecommerce.model.Department;
+import com.slashfmk.ecommerce.model.Product;
 import com.slashfmk.ecommerce.model.User;
 import com.slashfmk.ecommerce.service.UserService;
 import lombok.AllArgsConstructor;
@@ -18,7 +20,6 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final JWTUtil jwtUtil;
 
 
     @PostMapping
@@ -26,10 +27,7 @@ public class UserController {
 
         var createdUser = this.userService.registerUser(user);
 
-        String jwtToken = jwtUtil.issueToken(createdUser.getUsername(), "ROLE_USER");
-
         return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION, jwtToken)
                 .build();
     }
 
@@ -61,7 +59,10 @@ public class UserController {
 
     @GetMapping("/cart/{userid}")
     public ResponseEntity<List<Cart>> getAllCartElements(@PathVariable Long userid) {
-        return ResponseEntity.ok(this.userService.getCart(userid));
+       // return ResponseEntity.ok(this.userService.getCart(userid));
+        return ResponseEntity.ok(List.of(new Cart(new User("classh", "sl@xx.com", "sss@ss.com", "ppp"), new Product("jelly bean", "al", 12.54,
+
+                new Department("Paste", "dega")))));
     }
 
 }

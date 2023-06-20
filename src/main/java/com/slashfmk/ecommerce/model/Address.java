@@ -31,7 +31,7 @@ public class Address {
     private String country;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "UserId")
+    @JoinColumn(name = "userId")
     @JsonBackReference
     private User user;
 

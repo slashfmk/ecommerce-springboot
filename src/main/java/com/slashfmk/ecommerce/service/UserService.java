@@ -5,7 +5,6 @@ import com.slashfmk.ecommerce.model.Cart;
 import com.slashfmk.ecommerce.model.User;
 import com.slashfmk.ecommerce.repository.CartRepository;
 import com.slashfmk.ecommerce.repository.UserRepository;
-import com.slashfmk.ecommerce.security.SecurityConfig;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,6 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final SecurityConfig securityConfig;
     private final CartRepository cartRepository;
 
     public User registerUser(User user) {
@@ -29,7 +27,7 @@ public class UserService {
         if (userExists.isPresent())
             throw new IllegalArgumentException("A user with the current email or username exits");
 
-        user.setPassword(this.encodedPassword(user.getPassword()));
+//        user.setPassword(this.encodedPassword(user.getPassword()));
         user.setAccountNonLocked(true);
         user.setAccountEnabled(true);
         user.setAccountNonExpired(true);
@@ -68,9 +66,9 @@ public class UserService {
     }
 
     // Encode password using Bcrypt
-    private String encodedPassword(String password) {
-        return this.securityConfig.passwordEncoder().encode(password);
-    }
+//    private String encodedPassword(String password) {
+//        return this.securityConfig.passwordEncoder().encode(password);
+//    }
 
     public List<Cart> getCart(Long id) {
 
@@ -85,6 +83,7 @@ public class UserService {
      */
     private User userExists(Long id) {
         return this.userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("The user doesn't exist"));
+       // return this.userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("The user doesn't exist"));
     }
 
 }

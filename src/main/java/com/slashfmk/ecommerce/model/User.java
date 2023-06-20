@@ -2,6 +2,7 @@ package com.slashfmk.ecommerce.model;
 
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.slashfmk.ecommerce.roles.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -64,7 +65,10 @@ public class User implements UserDetails {
     private List<Address> address = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL
+    )
     private List<Cart> products = new ArrayList<>();
 
     public User(String name, String username, String email, String password) {
@@ -93,9 +97,12 @@ public class User implements UserDetails {
         this.address.remove(address);
     }
 
+    @Enumerated(EnumType.STRING)
+    private Role roles;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority(roles.name()));
     }
 
     @Override

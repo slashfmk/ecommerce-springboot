@@ -37,16 +37,18 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(
-            referencedColumnName = "department_id",
+//            referencedColumnName = "department_id",
             name = "department_id",
-            nullable = false,
-            foreignKey = @ForeignKey(name = "product_department_fk")
+            nullable = false
+//            foreignKey = @ForeignKey(name = "product_department_fk")
     )
     private Department department;
 
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-
+    @OneToMany(
+            mappedBy = "product",
+            cascade = CascadeType.ALL
+    )
     private List<Cart> users = new ArrayList<>();
 
     public Product(String name, String description, Double price, Department department) {

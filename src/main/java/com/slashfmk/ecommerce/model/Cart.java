@@ -2,6 +2,7 @@ package com.slashfmk.ecommerce.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,11 +13,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class Cart {
 
     @Id
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
             generator = "cart_sequence"
     )
     @SequenceGenerator(
@@ -26,11 +27,16 @@ public class Cart {
     private Long Id;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumn(
+            name = "userId",
+            foreignKey = @ForeignKey(name = "cart_user_fk"))
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "productId")
+    @JoinColumn(
+            name = "productId"
+//            foreignKey = @ForeignKey(name = "cart_product")
+    )
     private Product product;
 
     private LocalDateTime added_at;
